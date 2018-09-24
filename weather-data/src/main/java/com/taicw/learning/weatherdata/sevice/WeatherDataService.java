@@ -56,7 +56,6 @@ public class WeatherDataService implements IWeatherDataService {
             logger.info("redis中已有缓存数据，直接取缓存数据");
         } else {
             logger.info("redis中没有缓存数据，获取最新数据并缓存");
-
             // 缓存中没有，再调用服务接口来获取最新数据
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(uri, String.class);
             if(responseEntity.getStatusCode() == HttpStatus.OK){
@@ -65,7 +64,6 @@ public class WeatherDataService implements IWeatherDataService {
             } else {
                 logger.error("获取天气数据失败，{}", responseEntity.getBody());
             }
-
             stringRedisTemplate.opsForValue().set(uri, bodyStr, TIME_OUT, TimeUnit.SECONDS);
         }
 
