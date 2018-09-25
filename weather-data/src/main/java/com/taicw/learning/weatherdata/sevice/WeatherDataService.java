@@ -5,6 +5,7 @@ import com.taicw.learning.weatherdata.vo.WeatherResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,10 +24,10 @@ public class WeatherDataService implements IWeatherDataService {
 
     private static final Logger logger = LoggerFactory.getLogger(WeatherDataService.class);
 
-    private static final String WEATHER_URI = "http://wthrcdn.etouch.cn/weather_mini";
-
     private static final long TIME_OUT = 1800L;
 
+    @Value("${weather.api.uri}")
+    private String weatherUrl;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -37,17 +38,17 @@ public class WeatherDataService implements IWeatherDataService {
 
     @Override
     public WeatherResponse getDataByCityId(String cityId) {
-        return doGetWeather(WEATHER_URI + "?citykey=" + cityId);
+        return doGetWeather(weatherUrl + "?citykey=" + cityId);
     }
 
     @Override
     public WeatherResponse getDataByCityName(String cityName) {
-        return doGetWeather(WEATHER_URI + "?city=" + cityName);
+        return doGetWeather(weatherUrl + "?city=" + cityName);
     }
 
     @Override
     public void syncDataByCityId(String cityId) {
-        saveWeatherData(WEATHER_URI + "?citykey=" + cityId);
+        saveWeatherData(weatherUrl + "?citykey=" + cityId);
     }
 
     private WeatherResponse doGetWeather(String uri){

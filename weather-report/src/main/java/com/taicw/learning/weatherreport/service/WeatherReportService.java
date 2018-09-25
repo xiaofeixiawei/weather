@@ -1,5 +1,6 @@
 package com.taicw.learning.weatherreport.service;
 
+import com.taicw.learning.weatherreport.properties.ServiceProperties;
 import com.taicw.learning.weatherreport.vo.Weather;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,17 +18,20 @@ public class WeatherReportService implements IWeatherReportService {
     @Autowired
     RestTemplate restTemplate;
 
+    @Autowired
+    ServiceProperties serviceProperties;
+
     @Override
     public Weather getDataByCityId(String cityId) {
-         return restTemplate.getForObject("http://localhost:8082/weather/cityId/{cityId}", Weather.class, cityId);
+         return restTemplate.getForObject(serviceProperties.getWeatherDataUrl()+"/weather/cityId/{cityId}", Weather.class, cityId);
     }
 
     public Weather getDataByCityName(String name) {
-        return restTemplate.getForObject("http://localhost:8082/weather/cityName/{cityName}", Weather.class, name);
+        return restTemplate.getForObject(serviceProperties.getWeatherDataUrl()+"/weather/cityName/{cityName}", Weather.class, name);
     }
 
     @Override
     public List getCityList() {
-        return restTemplate.getForObject("http://127.0.0.1:8081/city/list", List.class);
+        return restTemplate.getForObject(serviceProperties.getCityDataUrl() + "/city/list", List.class);
     }
 }
