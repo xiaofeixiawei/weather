@@ -1,2 +1,18 @@
 server:
   port: 8081
+
+spring:
+  application:
+    name: weather-city-data
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      default-zone: http://127.0.0.1:8761/eureka/
+  instance:
+    instance-id: ${spring.cloud.client.ipAddress}:${spring.application.name}:${server.port}
+    prefer-ip-address: true
+#    lease-expiration-duration-in-seconds: 20
+#    lease-renewal-interval-in-seconds: 5

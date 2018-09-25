@@ -3,6 +3,8 @@ package com.taicw.learning.weatherreport.service;
 import com.taicw.learning.weatherreport.properties.ServiceProperties;
 import com.taicw.learning.weatherreport.vo.Weather;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -18,20 +20,39 @@ public class WeatherReportService implements IWeatherReportService {
     @Autowired
     RestTemplate restTemplate;
 
+//    @Autowired
+//    ServiceProperties serviceProperties;
+
     @Autowired
-    ServiceProperties serviceProperties;
+    private DiscoveryClient discoveryClient;
 
     @Override
     public Weather getDataByCityId(String cityId) {
-         return restTemplate.getForObject(serviceProperties.getWeatherDataUrl()+"/weather/cityId/{cityId}", Weather.class, cityId);
+        return restTemplate.getForObject(getServiceUrl("weather-data") + "/weather/cityId/{cityId}", Weather.class, cityId);
+
+        //return restTemplate.getForObject(serviceProperties.getWeatherDataUrl()+"/weather/cityId/{cityId}", Weather.class, cityId);
     }
 
     public Weather getDataByCityName(String name) {
-        return restTemplate.getForObject(serviceProperties.getWeatherDataUrl()+"/weather/cityName/{cityName}", Weather.class, name);
+
+        return restTemplate.getForObject(getServiceUrl("weather-data") + "/weather/cityName/{cityName}", Weather.class, name);
+
+        //return restTemplate.getForObject(serviceProperties.getWeatherDataUrl()+"/weather/cityName/{cityName}", Weather.class, name);
     }
 
     @Override
     public List getCityList() {
-        return restTemplate.getForObject(serviceProperties.getCityDataUrl() + "/city/list", List.class);
+
+        return restTemplate.getForObject(getServiceUrl("weather-city-data") + "/city/list", List.class);
+
+        //return restTemplate.getForObject(serviceProperties.getCityDataUrl() + "/city/list", List.class);
     }
+
+
+    private String getServiceUrl(String serviceId){
+        List<ServiceInstance> instances = discoveryClient.getInstances(serviceId);
+        ServiceInstance instance = instances.get(0);
+        return  "http://" + instance.getHost() + ":" + instance.getPort();
+    }
+
 }

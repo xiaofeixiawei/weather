@@ -1,2 +1,12 @@
 server:
   port: 8080
+spring:
+  application:
+    name: weather-report
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: true
+    service-url:
+      default-zone: http://127.0.0.1:8761/eureka/
+

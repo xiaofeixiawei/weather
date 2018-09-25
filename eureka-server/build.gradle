@@ -13,7 +13,6 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
 
 group = 'com.taicw.learning'
 version = '0.0.1-SNAPSHOT'
@@ -23,24 +22,19 @@ repositories {
 	mavenCentral()
 }
 
+
+ext {
+	springCloudVersion = 'Dalston.SR5'
+}
+
 dependencyManagement {
 	imports {
-		mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Dalston.SR5'
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
 	}
 }
 
 dependencies {
-	compile('org.springframework.boot:spring-boot-starter-web')
-
-	// redis
-	compile 'org.springframework.boot:spring-boot-starter-data-redis'
-
-	// httpClient
-	compile	'org.apache.httpcomponents:httpclient:4.5.3'
-
-	// 热部署
-	compile "org.springframework.boot:spring-boot-devtools"
-
+	compile('org.springframework.boot:spring-boot-starter')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 
 	compile 'org.springframework.cloud:spring-cloud-starter-eureka-server'
