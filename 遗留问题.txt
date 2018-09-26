@@ -1,0 +1,4 @@
+
+1、eureka-server 开启http basic后，client服务注册不了
+
+2、gradle 启动项目配置vm参数无效
