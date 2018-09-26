@@ -12,7 +12,6 @@ eureka:
     service-url:
       default-zone: http://127.0.0.1:8761/eureka/
   instance:
-    instance-id: ${spring.cloud.client.ipAddress}:${spring.application.name}:${server.port}
-    prefer-ip-address: true
-#    lease-expiration-duration-in-seconds: 20
-#    lease-renewal-interval-in-seconds: 5
+    instance-id: ${spring.application.name}:${spring.cloud.client.ipAddress}:${server.port}
+    prefer-ip-address: true # 以IP的形式注册到服务发现，默认是主机名
+    #ip-address: 127.0.0.1 # 指定注入的ip地址
