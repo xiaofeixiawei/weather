@@ -1,5 +1,6 @@
 package com.taicw.learning.weatherdata.config;
 
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -17,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 public class RestConfig {
 
     @Bean
+    @LoadBalanced
     public RestTemplate restTemplate(){
 
         RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
@@ -24,9 +26,21 @@ public class RestConfig {
         restTemplate.getMessageConverters().add(new StringHttpMessageConverter(StandardCharsets.UTF_8));
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 
+        return restTemplate;
+    }
+
+    //用于调用外部api, 如果使用负载均衡会在注册发现服务里找不到相应实例
+    @Bean
+    public RestTemplate externalRestTemplate(){
+
+        RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
+        restTemplate.getMessageConverters().clear();
+        restTemplate.getMessageConverters().add(new StringHttpMessageConverter(StandardCharsets.UTF_8));
+        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 
         return restTemplate;
     }
+
 
 
 //    @Autowired

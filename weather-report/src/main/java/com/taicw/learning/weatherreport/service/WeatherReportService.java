@@ -28,14 +28,19 @@ public class WeatherReportService implements IWeatherReportService {
 
     @Override
     public Weather getDataByCityId(String cityId) {
-        return restTemplate.getForObject(getServiceUrl("weather-data") + "/weather/cityId/{cityId}", Weather.class, cityId);
+
+        String serviceId = "weather-data";
+        return restTemplate.getForObject("http://" + serviceId + "/weather/cityId/{cityId}", Weather.class, cityId);
+
+        //return restTemplate.getForObject(getServiceUrl("weather-data") + "/weather/cityId/{cityId}", Weather.class, cityId);
 
         //return restTemplate.getForObject(serviceProperties.getWeatherDataUrl()+"/weather/cityId/{cityId}", Weather.class, cityId);
     }
 
     public Weather getDataByCityName(String name) {
 
-        return restTemplate.getForObject(getServiceUrl("weather-data") + "/weather/cityName/{cityName}", Weather.class, name);
+        String serviceId = "weather-data";
+        return restTemplate.getForObject("http://" + serviceId + "/weather/cityName/{cityName}", Weather.class, name);
 
         //return restTemplate.getForObject(serviceProperties.getWeatherDataUrl()+"/weather/cityName/{cityName}", Weather.class, name);
     }
@@ -43,16 +48,17 @@ public class WeatherReportService implements IWeatherReportService {
     @Override
     public List getCityList() {
 
-        return restTemplate.getForObject(getServiceUrl("weather-city-data") + "/city/list", List.class);
+        String serviceId = "weather-city-data";
+        return restTemplate.getForObject("http://" + serviceId + "/city/list", List.class);
 
         //return restTemplate.getForObject(serviceProperties.getCityDataUrl() + "/city/list", List.class);
     }
 
 
-    private String getServiceUrl(String serviceId){
-        List<ServiceInstance> instances = discoveryClient.getInstances(serviceId);
-        ServiceInstance instance = instances.get(0);
-        return  "http://" + instance.getHost() + ":" + instance.getPort();
-    }
+//    private String getServiceUrl(String serviceId){
+//        List<ServiceInstance> instances = discoveryClient.getInstances(serviceId);
+//        ServiceInstance instance = instances.get(0);
+//        return  "http://" + instance.getHost() + ":" + instance.getPort();
+//    }
 
 }

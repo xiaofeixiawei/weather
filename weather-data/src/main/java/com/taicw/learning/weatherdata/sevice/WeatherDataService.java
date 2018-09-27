@@ -5,6 +5,7 @@ import com.taicw.learning.weatherdata.vo.WeatherResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,8 @@ public class WeatherDataService implements IWeatherDataService {
     private String weatherUrl;
 
     @Autowired
-    private RestTemplate restTemplate;
+    @Qualifier("externalRestTemplate")
+    private RestTemplate externalRestTemplate;
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
@@ -58,7 +60,7 @@ public class WeatherDataService implements IWeatherDataService {
         } else {
             logger.info("redis中没有缓存数据，获取最新数据并缓存");
             // 缓存中没有，再调用服务接口来获取最新数据
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(uri, String.class);
+            ResponseEntity<String> responseEntity = externalRestTemplate.getForEntity(uri, String.class);
             if(responseEntity.getStatusCode() == HttpStatus.OK){
                 bodyStr = responseEntity.getBody();
                 logger.info("成功获取天气数据：{}", bodyStr);
@@ -80,7 +82,7 @@ public class WeatherDataService implements IWeatherDataService {
     }
 
     private void saveWeatherData(String uri){
-        ResponseEntity<String> responseEntity = restTemplate.getForEntity(uri, String.class);
+        ResponseEntity<String> responseEntity = externalRestTemplate.getForEntity(uri, String.class);
         if (responseEntity.getStatusCode() == HttpStatus.OK){
             stringRedisTemplate.opsForValue().set(uri, responseEntity.getBody(), TIME_OUT, TimeUnit.SECONDS);
         }

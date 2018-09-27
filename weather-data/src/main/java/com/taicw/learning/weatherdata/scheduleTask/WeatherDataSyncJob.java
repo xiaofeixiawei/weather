@@ -4,6 +4,7 @@ import com.taicw.learning.weatherdata.sevice.WeatherDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -23,6 +24,7 @@ public class WeatherDataSyncJob {
     private Logger logger = LoggerFactory.getLogger(WeatherDataSyncJob.class);
 
     @Autowired
+    @Qualifier("restTemplate")
     private RestTemplate restTemplate;
 
     @Autowired
@@ -31,17 +33,18 @@ public class WeatherDataSyncJob {
 //    @Value("${city.service.url}")
 //    private String cityServiceUrl;
 
-    @Autowired
-    private DiscoveryClient discoveryClient;
+//    @Autowired
+//    private DiscoveryClient discoveryClient;
 
 
     @Scheduled(fixedDelay = 2*60*60*1000)
     public void doSyncWeatherData(){
-        List<ServiceInstance> instances = discoveryClient.getInstances("weather-city-data");
-        ServiceInstance instance = instances.get(0);
-        String cityServiceUrl = "http://" + instance.getHost() + ":" + instance.getPort();
+//        List<ServiceInstance> instances = discoveryClient.getInstances("weather-city-data");
+//        ServiceInstance instance = instances.get(0);
+//        String cityServiceUrl = "http://" + instance.getHost() + ":" + instance.getPort();
 
-        List cityList = restTemplate.getForObject(cityServiceUrl + "/city/list", List.class);
+        String serviceId = "weather-city-data";
+        List cityList = restTemplate.getForObject("http://" + serviceId + "/city/list", List.class);
 
         logger.info("开始同步天气数据");
         for (Object c : cityList){

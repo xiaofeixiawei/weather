@@ -11,3 +11,7 @@ eureka:
       default-zone: http://127.0.0.1:8761/eureka/
   instance:
     prefer-ip-address: true
+weather-city-data:
+  ribbon:
+    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule # 使用随机策略，默认是轮询
+
