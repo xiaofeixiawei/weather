@@ -1,5 +1,6 @@
 package com.taicw.learning.weatherdata.scheduleTask;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.taicw.learning.weatherdata.sevice.WeatherDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +40,7 @@ public class WeatherDataSyncJob {
 
 
     @Scheduled(fixedDelay = 2*60*60*1000)
+    @HystrixCommand(fallbackMethod = "doSyncWeatherDataFallbackMethod")
     public void doSyncWeatherData(){
 //        List<ServiceInstance> instances = discoveryClient.getInstances("weather-city-data");
 //        ServiceInstance instance = instances.get(0);
@@ -53,6 +56,10 @@ public class WeatherDataSyncJob {
             logger.info("同步【{}】天气数据", city.get("cityName").toString());
         }
         logger.info("同步天气数据结束");
+    }
+
+    public void doSyncWeatherDataFallbackMethod(){
+        logger.error("地区服务异常，被熔断！");
     }
 
 }
