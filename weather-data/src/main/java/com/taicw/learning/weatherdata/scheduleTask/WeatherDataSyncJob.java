@@ -1,6 +1,7 @@
 package com.taicw.learning.weatherdata.scheduleTask;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.taicw.learning.weatherdata.client.WeatherCityDataClient;
 import com.taicw.learning.weatherdata.sevice.WeatherDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +26,13 @@ public class WeatherDataSyncJob {
 
     private Logger logger = LoggerFactory.getLogger(WeatherDataSyncJob.class);
 
+//    @Autowired
+//    @Qualifier("restTemplate")
+//    private RestTemplate restTemplate;
+
     @Autowired
-    @Qualifier("restTemplate")
-    private RestTemplate restTemplate;
+    //@Qualifier("weatherCityDataClient") //这里ide提示有多个bean，实际上WeatherCityDataClient的代理类默认为primary
+    private WeatherCityDataClient weatherCityDataClient;
 
     @Autowired
     private WeatherDataService weatherDataService;
@@ -40,14 +45,16 @@ public class WeatherDataSyncJob {
 
 
     @Scheduled(fixedDelay = 2*60*60*1000)
-    @HystrixCommand(fallbackMethod = "doSyncWeatherDataFallbackMethod")
+    //@HystrixCommand(fallbackMethod = "doSyncWeatherDataFallbackMethod")
     public void doSyncWeatherData(){
 //        List<ServiceInstance> instances = discoveryClient.getInstances("weather-city-data");
 //        ServiceInstance instance = instances.get(0);
 //        String cityServiceUrl = "http://" + instance.getHost() + ":" + instance.getPort();
 
-        String serviceId = "weather-city-data";
-        List cityList = restTemplate.getForObject("http://" + serviceId + "/city/list", List.class);
+//        String serviceId = "weather-city-data";
+//        List cityList = restTemplate.getForObject("http://" + serviceId + "/city/list", List.class);
+
+        List cityList = weatherCityDataClient.getCityList();
 
         logger.info("开始同步天气数据");
         for (Object c : cityList){
@@ -58,8 +65,8 @@ public class WeatherDataSyncJob {
         logger.info("同步天气数据结束");
     }
 
-    public void doSyncWeatherDataFallbackMethod(){
-        logger.error("地区服务异常，被熔断！");
-    }
+//    public void doSyncWeatherDataFallbackMethod(){
+//        logger.error("地区服务异常，被熔断！");
+//    }
 
 }

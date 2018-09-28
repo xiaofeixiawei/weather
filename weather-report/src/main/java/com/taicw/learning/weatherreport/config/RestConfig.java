@@ -16,17 +16,17 @@ import java.nio.charset.StandardCharsets;
 @Configuration
 public class RestConfig {
 
-    @Bean
-    @LoadBalanced
-    public RestTemplate restTemplate(){
-
-        RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
-        restTemplate.getMessageConverters().clear();
-        restTemplate.getMessageConverters().add(new StringHttpMessageConverter(StandardCharsets.UTF_8));
-        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-
-        return restTemplate;
-    }
+//    @Bean
+//    @LoadBalanced
+//    public RestTemplate restTemplate(){
+//
+//        RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
+//        restTemplate.getMessageConverters().clear();
+//        restTemplate.getMessageConverters().add(new StringHttpMessageConverter(StandardCharsets.UTF_8));
+//        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+//
+//        return restTemplate;
+//    }
 
 
 //    @Autowired

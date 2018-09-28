@@ -1,6 +1,8 @@
 package com.taicw.learning.weatherreport.service;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.taicw.learning.weatherreport.client.WeatherCityDataClient;
+import com.taicw.learning.weatherreport.client.WeatherDataClient;
 import com.taicw.learning.weatherreport.properties.ServiceProperties;
 import com.taicw.learning.weatherreport.vo.Forecast;
 import com.taicw.learning.weatherreport.vo.Weather;
@@ -26,8 +28,13 @@ public class WeatherReportService implements IWeatherReportService {
     private Logger logger = LoggerFactory.getLogger(WeatherReportService.class);
 
 
+//    @Autowired
+//    RestTemplate restTemplate;
+
     @Autowired
-    RestTemplate restTemplate;
+    private WeatherCityDataClient weatherCityDataClient;
+    @Autowired
+    private WeatherDataClient weatherDataClient;
 
 //    @Autowired
 //    ServiceProperties serviceProperties;
@@ -36,11 +43,13 @@ public class WeatherReportService implements IWeatherReportService {
     private DiscoveryClient discoveryClient;
 
     @Override
-    @HystrixCommand(fallbackMethod = "getWeatherDataFallbackMethod")
+    //@HystrixCommand(fallbackMethod = "getWeatherDataFallbackMethod")
     public Weather getDataByCityId(String cityId) {
 
-        String serviceId = "weather-data";
-        return restTemplate.getForObject("http://" + serviceId + "/weather/cityId/{cityId}", Weather.class, cityId);
+        return weatherDataClient.getDataByCityId(cityId);
+
+//        String serviceId = "weather-data";
+//        return restTemplate.getForObject("http://" + serviceId + "/weather/cityId/{cityId}", Weather.class, cityId);
 
         //return restTemplate.getForObject(getServiceUrl("weather-data") + "/weather/cityId/{cityId}", Weather.class, cityId);
 
@@ -48,21 +57,25 @@ public class WeatherReportService implements IWeatherReportService {
     }
 
     @Override
-    @HystrixCommand(fallbackMethod = "getWeatherDataFallbackMethod")
+    //@HystrixCommand(fallbackMethod = "getWeatherDataFallbackMethod")
     public Weather getDataByCityName(String name) {
 
-        String serviceId = "weather-data";
-        return restTemplate.getForObject("http://" + serviceId + "/weather/cityName/{cityName}", Weather.class, name);
+        return weatherDataClient.getWeatherByCityName(name);
+
+//        String serviceId = "weather-data";
+//        return restTemplate.getForObject("http://" + serviceId + "/weather/cityName/{cityName}", Weather.class, name);
 
         //return restTemplate.getForObject(serviceProperties.getWeatherDataUrl()+"/weather/cityName/{cityName}", Weather.class, name);
     }
 
     @Override
-    @HystrixCommand(fallbackMethod = "getCityListFallbackMethod")
+    //@HystrixCommand(fallbackMethod = "getCityListFallbackMethod")
     public List getCityList() {
 
-        String serviceId = "weather-city-data";
-        return restTemplate.getForObject("http://" + serviceId + "/city/list", List.class);
+        return weatherCityDataClient.getCityList();
+
+//        String serviceId = "weather-city-data";
+//        return restTemplate.getForObject("http://" + serviceId + "/city/list", List.class);
 
         //return restTemplate.getForObject(serviceProperties.getCityDataUrl() + "/city/list", List.class);
     }
@@ -75,42 +88,42 @@ public class WeatherReportService implements IWeatherReportService {
 //    }
 
 
-    public Weather getWeatherDataFallbackMethod(String cityId){
-
-        logger.error("weather-data微服务异常，被熔断");
-
-        Weather weather = new Weather();
-        weather.setAqi("108");
-        weather.setCity("北京");
-        weather.setWendu("18");
-        weather.setGanmao("昼夜温差较大，较易发生感冒，请适当增减衣服。体质较弱的朋友请注意防护。");
-
-        Forecast forecast = new Forecast();
-        forecast.setDate("1日星期一");
-        forecast.setHigh("高温 22℃");
-        forecast.setLow("低温 12℃");
-        forecast.setFengxiang("西北风");
-        forecast.setFengli("4-5级");
-        forecast.setType("晴");
-        ArrayList<Forecast> forecastArrayList = new ArrayList<>();
-        forecastArrayList.add(forecast);
-
-        weather.setForecast(forecastArrayList);
-
-        return weather;
-    }
-
-    public List getCityListFallbackMethod(){
-
-        logger.error("weather-city-data微服务异常，被熔断");
-
-        ArrayList<Map> cityList = new ArrayList<>();
-        Map<String, String> city = new HashMap<>();
-        city.put("cityName", "北京");
-        city.put("cityId", "101010100");
-        cityList.add(city);
-        return cityList;
-    }
+//    public Weather getWeatherDataFallbackMethod(String cityId){
+//
+//        logger.error("weather-data微服务异常，被熔断");
+//
+//        Weather weather = new Weather();
+//        weather.setAqi("108");
+//        weather.setCity("北京");
+//        weather.setWendu("18");
+//        weather.setGanmao("昼夜温差较大，较易发生感冒，请适当增减衣服。体质较弱的朋友请注意防护。");
+//
+//        Forecast forecast = new Forecast();
+//        forecast.setDate("1日星期一");
+//        forecast.setHigh("高温 22℃");
+//        forecast.setLow("低温 12℃");
+//        forecast.setFengxiang("西北风");
+//        forecast.setFengli("4-5级");
+//        forecast.setType("晴");
+//        ArrayList<Forecast> forecastArrayList = new ArrayList<>();
+//        forecastArrayList.add(forecast);
+//
+//        weather.setForecast(forecastArrayList);
+//
+//        return weather;
+//    }
+//
+//    public List getCityListFallbackMethod(){
+//
+//        logger.error("weather-city-data微服务异常，被熔断");
+//
+//        ArrayList<Map> cityList = new ArrayList<>();
+//        Map<String, String> city = new HashMap<>();
+//        city.put("cityName", "北京");
+//        city.put("cityId", "101010100");
+//        cityList.add(city);
+//        return cityList;
+//    }
 
 }
 

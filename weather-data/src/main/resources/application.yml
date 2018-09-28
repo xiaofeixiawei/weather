@@ -15,3 +15,7 @@ weather-city-data:
   ribbon:
     NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule # 使用随机策略，默认是轮询
 
+feign:
+  hystrix:
+    enabled: true
+
