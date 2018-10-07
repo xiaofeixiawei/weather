@@ -1,0 +1,29 @@
+server:
+  port: 6767
+spring:
+  application:
+    name: gateway
+zuul:
+  routes:
+    weather-report-route: #路由名称，任意写
+      path: /weather/** #路由规则，转发以/report开头的请求
+      #url: http://127.0.0.1:8080
+      service-id: weather-report
+    weather-data-route:
+      path: /weatherData/**
+      #url: http://127.0.0.1:8091
+      service-id: weather-data
+    weather-city-route:
+      path: /cityData/**
+      #url: http://127.0.0.1:8081
+      service-id: weather-city-data
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      default-zone: http://127.0.0.1:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+

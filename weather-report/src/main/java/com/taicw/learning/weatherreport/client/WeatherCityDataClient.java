@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
-@FeignClient(value = "weather-city-data", fallback = WeatherCityDataClientFallback.class, qualifier = "weatherCityDataClient")
+@FeignClient(value = "gateway", fallback = WeatherCityDataClientFallback.class, qualifier = "weatherCityDataClient")
 //@RequestMapping("/city")
 public interface WeatherCityDataClient {
 
-    @GetMapping("/city/list")
+    @GetMapping("/cityData/city/list")
     List getCityList();
 }

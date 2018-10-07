@@ -5,7 +5,7 @@ spring:
     name: weather-report
 eureka:
   client:
-    register-with-eureka: false
+    register-with-eureka: true
     fetch-registry: true
     service-url:
       default-zone: http://127.0.0.1:8761/eureka/

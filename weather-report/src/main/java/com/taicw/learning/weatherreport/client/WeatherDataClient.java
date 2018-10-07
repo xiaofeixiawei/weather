@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 /**
  * Created by taichangwei on 2018/9/28.
  */
-@FeignClient(value = "weather-data", fallback = WeatherDataClientFallback.class, qualifier = "weatherDataClient")
+@FeignClient(value = "gateway", fallback = WeatherDataClientFallback.class, qualifier = "weatherDataClient")
 public interface WeatherDataClient {
 
-    @GetMapping("/weather/cityId/{cityId}")
+    @GetMapping("/weatherData/weather/cityId/{cityId}")
     Weather getDataByCityId(@PathVariable("cityId") String cityId);
 
-    @GetMapping("/weather/cityName/{cityName}")
+    @GetMapping("/weatherData/weather/cityName/{cityName}")
     Weather getWeatherByCityName(@PathVariable("cityName") String cityName);
 
 
